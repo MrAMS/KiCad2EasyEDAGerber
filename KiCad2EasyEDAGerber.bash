@@ -53,6 +53,7 @@ G04 Leading zeros omitted, absolute positions, 3 integers and 5 decimals*" | cat
 ;Layer: $layername
 ;$EasyEDA_VERSION, $DATE
 ;Gerber Generator version 0.3" | cat - "$file" > temp && mv temp "$file"
+      sed -i '/[Kk][Ii][Cc][Aa][Dd]/d' "$file"
     fi
 
     # 重命名文件
