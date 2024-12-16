@@ -4,10 +4,10 @@
 
 Environment: Linux or Git Bash on Windows
 
-Use [JLC-Plugin-for-KiCad](https://github.com/bennymeg/JLC-Plugin-for-KiCad) to export production and then run script with that production directory path
+Use [JLC-Plugin-for-KiCad](https://github.com/bennymeg/JLC-Plugin-for-KiCad) to export production and then run script with that project directory path
 
 ```bash
-./KiCad2EasyEDAGerber.bash /the/path/of/production
+./KiCad2EasyEDAGerber.bash /the/path/of/project
 ```
 
 Support any number of PCB layers

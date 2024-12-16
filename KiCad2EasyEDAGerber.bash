@@ -1,19 +1,27 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "Usage: $0 <production_dir>"
+    echo "Usage: $0 <project_dir>"
     exit 1
 fi
 
-WORK_DIR="$1"
+PCB_NAME=$(basename "$1")
+echo "PCB Name=$PCB_NAME"
+WORK_DIR="$1/production"
 
 TMP_DIR="$WORK_DIR/tmp"
-OUT_NAME="Gerber_PCB1_$(date +"%Y-%m-%d")"
+IN_ZIP="$WORK_DIR/$PCB_NAME.zip"
+OUT_NAME="Gerber_${PCB_NAME}_$(date +"%Y-%m-%d")"
 OUT_DIR="$WORK_DIR/$OUT_NAME"
 OUT_ZIP="$WORK_DIR/$OUT_NAME.zip"
 
 EasyEDA_VERSION="EasyEDA Pro v2.2.32.3"
 DATE=$(date +"%Y-%m-%d %H:%M:%S")
+
+if ! ls $IN_ZIP 1>/dev/null 2>&1; then
+    echo "Production zip file not found, please make sure to run JLC-Plugin-for-KiCad at first or check your path"
+    exit 1
+fi
 
 # 函数：替换文件头部信息并重命名文件
 replace_header_and_rename() {
@@ -24,12 +32,10 @@ replace_header_and_rename() {
   for file in $(find $TMP_DIR -type f -regextype posix-extended -regex ".*/$regex"); do
     
     local new_name=$(basename "$file" | sed -E "$rule")   
-    local layername=$(echo "$new_name" | sed -E 's/^Gerber_([^.]+)\..*$/\1/')
-    echo $file
-    echo $new_name
-    echo $layername
+    local layername=$(echo "$new_name" | sed -E 's/^(Drill|Gerber)_([^.]+)\..*$/\2/')
+    echo "WORKING ON LAYER $layername"
     if grep -qE "^G04" "$file" ; then
-      echo "Gerber File"
+      # echo "Gerber File"
       sed -i '/^G04/d' "$file"
       echo "G04 Layer: $layername*
 G04 $EasyEDA_VERSION, $DATE*
@@ -38,7 +44,7 @@ G04 Scale: 100 percent, Rotated: No, Reflected: No*
 G04 Dimensions in millimeters*
 G04 Leading zeros omitted, absolute positions, 3 integers and 5 decimals*" | cat - "$file" > temp && mv temp "$file"
     else
-      echo "DRL File"
+      # echo "DRL File"
       local plated_type="PLATED"
       if [[ $regex == *"NPTH"* ]]; then
         plated_type="NON_PLATED"
@@ -80,7 +86,7 @@ rm $OUT_ZIP
 mkdir $TMP_DIR
 mkdir $OUT_DIR
 echo "WORKING IN $OUT_DIR ..."
-unzip -o $WORK_DIR/*.zip -d $TMP_DIR
+unzip -o $IN_ZIP -d $TMP_DIR
 
 # 应用所有重命名规则
 for regex in "${!rename_rules[@]}"; do
