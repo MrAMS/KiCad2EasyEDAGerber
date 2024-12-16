@@ -10,4 +10,6 @@ Use [JLC-Plugin-for-KiCad](https://github.com/bennymeg/JLC-Plugin-for-KiCad) to 
 ./KiCad2EasyEDAGerber.bash /the/path/of/production
 ```
 
+Support any number of PCB layers
+
 Verified working on 2024-12-16
