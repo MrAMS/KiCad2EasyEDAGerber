@@ -12,4 +12,4 @@ Use [JLC-Plugin-for-KiCad](https://github.com/bennymeg/JLC-Plugin-for-KiCad) to 
 
 Support any number of PCB layers
 
-Verified working on 2024-12-16
+Verified working on 2025-01-21
